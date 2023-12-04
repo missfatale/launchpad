@@ -1,0 +1,22 @@
+### Store your sensitive information in a .env as a best-practice. 
+## I personally store a ton of information in my .env as you can see below. 
+services:
+  nextcloud:
+    image: nextcloud:latest
+    container_name: nextcloud
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+       - $NETWORK # - Your Network Name
+    ports:
+      - 8080:80
+    volumes:
+      - INTERNAL_VOLUME_LOCATION:/var/www/html
+      - INTERNAL_VOLUME_LOCATION:/var/www/html/custom_apps
+      - INTERNAL_VOLUME_LOCATION:/var/www/html/config
+      - INTERNAL_VOLUME_LOCATION:/var/www/html/data
+ 
+networks:
+  $NETWORK: # - Your Network Name
+    external: true
