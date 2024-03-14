@@ -1,0 +1,20 @@
+# Store your sensitive information in a .env as a best-practice. 
+
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - $NETWORK # - Your Network Name
+    ports:
+      - 3001:3001
+    volumes:
+      - VOLUME_LOCATION:/app/data # - Your Uptime-Kuma Volume Location
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  $NETWORK: # - Your Network Name
+    external: true

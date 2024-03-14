@@ -1,0 +1,30 @@
+# Store your sensitive information in a .env as a best-practice. 
+
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: uptime-kuma
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    networks:
+      - $NETWORK # - Your Network Name
+    volumes:
+      - VOLUME_LOCATION:/app/data # - Your Uptime-Kuma Volume Location
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.uptime-kuma.entrypoints=http"
+      - "traefik.http.routers.uptime-kuma.rule=Host(`${TRAEFIK_HOST_RULE}`)" # - Your Internal (Optionally External DNS add (|| Host(`$EXTERNAL_HOST`)
+      - "traefik.http.middlewares.uptime-kuma-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.uptime-kuma.middlewares=portainer-https-redirect"
+      - "traefik.http.routers.uptime-kuma-secure.entrypoints=https"
+      - "traefik.http.routers.uptime-kuma-secure.rule=Host(`${TRAEFIK_HOST_RULE}`)" # - Your Internal (Optionally External DNS add (|| Host(`$EXTERNAL_HOST`)
+      - "traefik.http.routers.uptime-kuma-secure.tls=true"
+      - "traefik.http.routers.uptime-kuma-secure.service=${SERVICE}"
+      - "traefik.http.services.uptime-kuma.loadbalancer.server.port=${SERVICE_PORT}" # - Service Port
+      - "traefik.docker.network=$NETWORK" # - Your Network Name
+
+networks:
+  $NETWORK: # - Your Network Name
+    external: true
